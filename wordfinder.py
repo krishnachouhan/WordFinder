@@ -1,9 +1,10 @@
 import gzip, os, re
 from math import log
-
 from nltk.corpus import words
+
 word_list = words.words()
 words = word_list
+
 
 # 1. Preserve original character case after splitting
 # 2. Avoid splitting every post-digit character in a mixed string (e.g. 'win32intel')
@@ -29,9 +30,7 @@ _numerics = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 def split(s):
   """Uses dynamic programming to infer the location of spaces in a string without spaces."""
   l = [_split(x) for x in _SPLIT_RE.split(s)]
-  print("LIST IS....")
   templist = [item for sublist in l for item in sublist]
-  print(templist)
   newtemplist=[]
   string = ""
   for i in templist:
@@ -50,10 +49,11 @@ def split(s):
 
 
 def confirmWords(word_list):
+  """Trying to handle improper split of words"""
   new_word_list = []
-  new_word_list.append(word_list[0])
+  # new_word_list.append(word_list[0])
   for index in range(0, len(word_list)-1):
-    if not word_list[index+1] in words:
+    if not word_list[index+1] in words and word_list[index+1]!="" and word_list[index+1][0] not in _numerics and word_list[index]!="" and word_list[index][0] not in _numerics:
       words_match = False
       first_word = word_list[index]
       second_word = word_list[index+1]
@@ -72,6 +72,8 @@ def confirmWords(word_list):
         new_word_list.append(second_word)
     else:
       new_word_list.append(word_list[index])
+  if len(new_word_list)<len(word_list) and word_list[len(word_list)-1] in words:
+    new_word_list.append(word_list[len(word_list)-1])
   return new_word_list
 
 
@@ -107,4 +109,11 @@ def _split(s):
             out.append(s[i-k:i])
         i -= k
     return reversed(out)
+
+
+
+teststr = "Some32Peoplewerethereoutofwhich10cameout"
+
+
+split(teststr)
 
