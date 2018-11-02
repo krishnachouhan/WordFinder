@@ -1,35 +1,21 @@
 import gzip, os, re
 from math import log
 
-
-__version__ = '0.1.5'
-
-
-
 from nltk.corpus import words
 word_list = words.words()
-
 words = word_list
 
-# I did not author this code, only tweaked it from:
-# http://stackoverflow.com/a/11642687/2449774
-# Thanks Generic Human!
-
-
-# Modifications by Scott Randal (Genesys)
-#
 # 1. Preserve original character case after splitting
 # 2. Avoid splitting every post-digit character in a mixed string (e.g. 'win32intel')
 # 3. Avoid splitting digit sequences
 # 4. Handle input containing apostrophes (for possessives and contractions)
-#
 # Wordlist changes:
 # Change 2 required adding single digits to the wordlist
 # Change 4 required the following wordlist additions:
 #   's
 #   '
-#   <list of contractions>
-
+# 5. Handle input containing number
+# 6. Handle output with improper splits
 
 # # Build a cost dictionary, assuming Zipf's law and cost = -math.log(probability).
 # with gzip.open(os.path.join(os.path.dirname(os.path.abspath(__file__)),'wordninja','wordninja_words.txt.gz')) as f:
