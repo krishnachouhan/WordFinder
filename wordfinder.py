@@ -31,11 +31,9 @@ words = word_list
 #   <list of contractions>
 
 
-# Build a cost dictionary, assuming Zipf's law and cost = -math.log(probability).
-with gzip.open(os.path.join(os.path.dirname(os.path.abspath(__file__)),'wordninja','wordninja_words.txt.gz')) as f:
-  words = f.read().decode().split()
-  print("Type(words)", type(words))
-  print("Len(words)", len(words))
+# # Build a cost dictionary, assuming Zipf's law and cost = -math.log(probability).
+# with gzip.open(os.path.join(os.path.dirname(os.path.abspath(__file__)),'wordninja','wordninja_words.txt.gz')) as f:
+#   words = f.read().decode().split()
 
 _wordcost = dict((k, log((i+1)*log(len(words)))) for i,k in enumerate(words))
 _maxword = max(len(x) for x in words)
@@ -61,7 +59,34 @@ def split(s):
   if len(string)>0:
     tempresult = split(string)
   templist += tempresult
+  templist = confirmWords(templist)
   return templist
+
+
+def confirmWords(word_list):
+  new_word_list = []
+  new_word_list.append(word_list[0])
+  for index in range(0, len(word_list)-1):
+    if not word_list[index+1] in words:
+      words_match = False
+      first_word = word_list[index]
+      second_word = word_list[index+1]
+      print("Working on ", first_word)
+      while  len(first_word)>0 and not words_match:
+        second_word = first_word[len(first_word)-1] + second_word
+        first_word = first_word[:len(first_word)-1]
+        print("\t", first_word)
+        print("\t", second_word)
+        if first_word not in words and second_word not in words:
+          words_match = False
+        else:
+          words_match = True
+      if words_match:
+        new_word_list.append(first_word)
+        new_word_list.append(second_word)
+    else:
+      new_word_list.append(word_list[index])
+  return new_word_list
 
 
 def _split(s):
@@ -96,3 +121,4 @@ def _split(s):
             out.append(s[i-k:i])
         i -= k
     return reversed(out)
+
